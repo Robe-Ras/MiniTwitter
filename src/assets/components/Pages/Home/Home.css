@@ -1,0 +1,146 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+.profile-page {
+  position: relative;
+}
+
+#form-wrap {
+  transition: ease 0.2s;
+  position: fixed;
+  overflow: hidden;
+  overflow-y: auto;
+  background: #2C2E3A;
+  height: 100%;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 99999999;
+  color: white;
+}
+
+#close-modal {
+  transition: ease 0.2s;
+  position: absolute;
+  right: 0;
+  margin: 15px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 9999999999999;
+}
+
+#close-modal:hover {
+  color: black;
+}
+
+.edit-article-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 5em;
+}
+
+.form-title {
+  font-size: 3em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2em;
+  margin-top: 2em;
+  color: #605CEB;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.form-group textarea {
+  width: 100%;
+  color: black;
+  height: 150px;
+}
+
+.btn-rounded {
+  margin-top: 2em;
+  background-color: #605CEB;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  font-weight: bold;
+  transition: transform 0.2s;
+}
+
+.btn-rounded:hover {
+  transform: scale(1.05);
+}
+
+.flash-message {
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.animated {
+  animation-duration: 1s;
+}
+
+.slideInUp {
+  animation-duration: 1s;
+  animation-name: slideInUp;
+}
+
+.slideOutDown {
+  animation-duration: 1s;
+  animation-name: slideOutDown;
+}
+
+.form_button_home {
+  width: 70px; 
+  height: 70px; 
+  padding: 0; /* Supprimez le padding pour éviter la déformation */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #605CEB;
+  color: white;
+  border-radius: 50%;
+  font-weight: bold;
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.form_button_home img {
+  width: 300%; 
+  height: auto; 
+  object-fit: contain;
+}
+
+.form_button_home:hover {
+  transform: scale(1.05);
+}
+
+.hidden {
+  display: none;
+}
+

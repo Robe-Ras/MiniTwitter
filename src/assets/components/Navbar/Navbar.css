@@ -1,0 +1,43 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+
+.user-name {
+  font-size: 1.3em !important; 
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.gif-container {
+  margin-top: 1em;
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  height: 100%; 
+}
+
+#navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%; /* Assurez-vous que le conteneur occupe toute la hauteur */
+  padding: 3em 0em; /* Ajoute un peu de padding horizontal */
+  position: relative;
+}
+
+.logo {
+  position: relative;
+  width: 5em;
+  margin-left: 1em;
+}
+
+#burger-menu-button {
+  position: relative;
+  margin-right: 1em;
+}
+
+#dropdown.open + #burger-menu-button {
+  right: calc(100% - 100% + 1em); 
+}
+

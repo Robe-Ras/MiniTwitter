@@ -1,0 +1,220 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+.profile-page {
+  position: relative;
+}
+
+#navbar-container {
+  position: relative;
+}
+
+.profile-icon, .camera-icon {
+  background-color: #2C2E3A; 
+  border-radius: 50%;
+  padding: 5px; 
+  transition: background-color 0.3s ease;
+}
+
+.camera-icon {
+  position: absolute;
+  top: 30%;
+  right: -1px;
+  transform: translateY(-50%);
+  z-index: 2; 
+}
+
+.camera-icon-circle {
+  background-color: #2C2E3A; 
+  border-radius: 50%;
+  padding: 10px; 
+  transition: background-color 0.3s ease;
+}
+
+.camera-icon:hover, .camera-icon-circle:hover {
+  background-color: rgba(255, 255, 255, 0.2); 
+  cursor: pointer; 
+
+}
+
+.profil-picture {
+  position: relative;
+  top: -65px; 
+}
+
+.description-text {
+  text-align: justify;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+
+/* edit profil button */
+.edit-profile a {
+  background-color: #2C2E3A; 
+  border-radius: 50%;
+  padding: 10px;
+  display: inline-block;
+}
+
+.edit-profile a:hover, .camera-icon-circle:hover {
+  background-color: #605CEB; 
+  cursor: pointer; 
+
+}
+
+/* edit profil form */
+.edit-profile-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 5em; 
+}
+
+.form-title {
+  font-size: 3em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2em;
+  margin-top: 2em; 
+  color:#605CEB;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  text-align: left;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  color: black; 
+}
+
+.form-group textarea {
+  height: 150px; 
+}
+
+
+/* formulaire */
+#form-wrap {
+  transition: ease 0.2s;
+  position: fixed;
+  overflow: hidden;
+  overflow-y: auto;
+  background: #2C2E3A;
+  height: 100%;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  z-index: 99999999;
+  color: white;
+}
+
+#close-modal {
+  transition: ease 0.2s;
+  position: absolute;
+  right: 0;
+  margin: 15px;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 9999999999999;
+}
+
+#close-modal:hover {
+  color: black;
+}
+
+.form-open {
+  top: 0 !important;
+}
+
+form#register-form {
+  width: 50%;
+  height: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  padding: 50px;
+}
+
+#register-form input {
+  border-radius: 0;
+  border: none;
+  padding: 12px;
+  opacity: 0.8;
+  transition: ease 0.2s;
+  outline: none !important;
+  box-shadow: none;
+  
+}
+
+#register-form input:focus {
+  opacity: 1;
+}
+
+.animated {
+  animation-duration: 1s;
+}
+
+.slideInUp {
+  animation-duration: 1s; 
+  animation-name: slideInUp; 
+}
+
+.slideOutDown {
+  animation-duration: 1s; 
+  animation-name: slideOutDown; 
+}
+
+.btn-rounded {
+  margin-top: 2em;
+  background-color: #605CEB; 
+  border-radius: 0.75rem; 
+  padding: 0.75rem 1.5rem; 
+  color: white; 
+  font-weight: bold; 
+  transition: transform 0.2s; 
+}
+
+.btn-rounded:hover {
+  transform: scale(1.05); 
+}
+
+.flash-message {
+  position: fixed;
+  top: 12%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.flash-message.success {
+  background-color: #4BB543; /* Vert pour succès */
+}
+
+.flash-message.error {
+  background-color: #FF0000; /* Rouge pour échec */
+}
+
+.hidden {
+  display: none;
+}
+
