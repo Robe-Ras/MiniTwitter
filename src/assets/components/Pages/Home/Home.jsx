@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { atom, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import 'animate.css/animate.min.css';
 import './Home.css';
 import PostCard from '/src/assets/components/PostCard/PostCard'; 
-
-const postsAtom = atom([]); // Changed this line
-const userAtom = atom({ id: null, description: '' });
+import { postsAtom, userAtom } from '/src/assets/components/atoms';
 
 const Home = () => {
   const [posts, setPosts] = useAtom(postsAtom);
@@ -15,15 +13,37 @@ const Home = () => {
   const [flashMessageColor, setFlashMessageColor] = useState('');
   const [showEditForm, setShowEditForm] = useState(false);
 
+  const handleOpen = () => {
+    setShowEditForm(true);
+    setTimeout(() => {
+      const formWrap = document.getElementById('form-wrap');
+      formWrap.classList.add('slideInUp');
+    }, 0);
+  };
+
+  const handleClose = () => {
+    const formWrap = document.getElementById('form-wrap');
+    formWrap.classList.remove('slideInUp');
+    formWrap.classList.add('slideOutDown');
+    formWrap.addEventListener('animationend', (e) => {
+      e.stopPropagation(); 
+      setShowEditForm(false);
+      setFlashMessage('Modifications non enregistrées.');
+      setFlashMessageColor('error');
+      setTimeout(() => setFlashMessage(''), 3000); 
+      formWrap.classList.add('hidden'); 
+    }, { once: true });
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       const token = Cookies.get('token');
-      const response = await fetch('http://localhost:1337/api/posts', {
+      const response = await fetch('http://localhost:1337/api/posts?populate=*', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
-      console.log('Fetched posts:', data); // Added this line to log the fetched posts
-      setPosts(data.data);
+      console.log('Fetched posts:', data); 
+      setPosts(data.data.sort((a, b) => new Date(b.attributes.createdAt) - new Date(a.attributes.createdAt)));
     };
     fetchPosts();
   }, [setPosts]);
@@ -31,11 +51,11 @@ const Home = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const token = Cookies.get('token');
-      const response = await fetch('http://localhost:1337/api/users/me', {
+      const response = await fetch('http://localhost:1337/api/users/me?populate=*', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
-      setUserData({ id: data.id, description: '' });
+      setUserData({ id: data.id, description: '', profilePicture: data.profilePicture?.url || '' });
     };
     fetchUserData();
   }, [setUserData]);
@@ -59,8 +79,14 @@ const Home = () => {
     console.log('Response from server:', result);
 
     if (response.ok) {
-      setPosts(prevPosts => [result.data, ...(Array.isArray(prevPosts) ? prevPosts : [])]);
+      setPosts(prevPosts => [{ ...result.data, attributes: { ...result.data.attributes, author: { data: { attributes: { username: userData.username } } } } }, ...(Array.isArray(prevPosts) ? prevPosts : [])]);
       setShowEditForm(false);
+      const formWrap = document.getElementById('form-wrap');
+      formWrap.classList.remove('slideInUp');
+      formWrap.classList.add('slideOutDown');
+      formWrap.addEventListener('animationend', () => {
+        formWrap.classList.add('hidden');
+      }, { once: true });
       setFlashMessage('Article créé avec succès!');
       setFlashMessageColor('success');
       setTimeout(() => setFlashMessage(''), 3000);
@@ -75,13 +101,13 @@ const Home = () => {
     <div>
       {flashMessage && <div className={`flash-message ${flashMessageColor}`}>{flashMessage}</div>}
       <div className="form_button_home">
-        <a href="#" onClick={() => setShowEditForm(true)}>
+        <a href="#" onClick={handleOpen}>
           <img src="https://img.icons8.com/ios-filled/24/FFFFFF/edit.png" alt="Écrivez votre article"/>
         </a>
       </div>
       {showEditForm && (
         <div id="form-wrap" className="p-4 animated slideInUp">
-          <button id="close-modal" type="button" className="close" onClick={() => setShowEditForm(false)}>
+          <button id="close-modal" type="button" className="close" onClick={handleClose}>
             <i className="fa fa-times"></i>
           </button>
           <form onSubmit={handleSubmit} className="edit-article-form">
@@ -98,11 +124,17 @@ const Home = () => {
         {Array.isArray(posts) && posts.map(post => (
           <PostCard
             key={post.id}
-            author={post.author?.username || 'Inconnu'}
+            author={post?.attributes?.author?.data?.attributes?.username || 'Auteur inconnu'}
             date={new Date(post.attributes.createdAt).toLocaleString()}
             text={post.attributes.text || 'Aucun texte'}
             likes={post.attributes.likes || 0}
-            authorImage={post.author?.profilePicture || 'https://via.placeholder.com/150'}
+            authorImage={userData.profilePicture || "/src/assets/components/Pages/Profil/avatar.jpg"}
+            postId={post.id.toString()}
+            usersLikes={Array.isArray(post.attributes.users_likes) ? post.attributes.users_likes : []}
+            userId={userData.id ? userData.id.toString() : ''}
+            setLikes={(newLikes) => {
+              setPosts((prevPosts) => prevPosts.map((p) => p.id === post.id ? { ...p, attributes: { ...p.attributes, likes: newLikes } } : p));
+            }}
           />
         ))}
       </div>

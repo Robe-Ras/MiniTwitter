@@ -2,11 +2,12 @@ import './Profil.css';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import 'animate.css/animate.min.css';
+import { useAtom } from 'jotai';
+import { userDataAtom } from '/src/assets/components/atoms';
 
 const Profil = () => {
-  const [userData, setUserData] = useState({ username: '', email: '', description: '', password: '' });
+  const [userData, setUserData] = useAtom(userDataAtom);
   const [showEditForm, setShowEditForm] = useState(false);
-  // const navigate = useNavigate();
   const [flashMessage, setFlashMessage] = useState('');
   const [flashMessageColor, setFlashMessageColor] = useState('');
   const [userId, setUserId] = useState(null);
@@ -19,14 +20,20 @@ const Profil = () => {
       });
       const data = await response.json();
       setUserData(data || { username: '', email: '', description: '', password: '' });
-      setUserId(data.id); // Ajoutez cette ligne pour stocker l'ID de l'utilisateur
+      setUserId(data.id); 
     };
     fetchUserData();
-  }, []);
+  }, [setUserData]);
+
+  useEffect(() => {}, [userData.profilePicture]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    setUserData({ ...userData, profilePicture: e.target.files[0] });
   };
 
   const handleSubmit = async (e) => {
@@ -37,13 +44,21 @@ const Profil = () => {
       setFlashMessageColor('error');
       return;
     }
+
+    const formData = new FormData();
+    formData.append('username', userData.username);
+    formData.append('email', userData.email);
+    formData.append('description', userData.description);
+    if (userData.profilePicture) {
+      formData.append('profilePicture', userData.profilePicture);
+    }
+
     const response = await fetch(`http://localhost:1337/api/users/${userId}`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify(userData)
+      body: formData
     });
     const data = await response.json();
     if (response.ok) {
@@ -58,6 +73,9 @@ const Profil = () => {
         setTimeout(() => setFlashMessage(''), 3000);
         formWrap.classList.add('hidden'); // Masquer le formulaire après l'animation
       }, { once: true });
+      if (data.profilePicture) {
+        setUserData({ ...userData, profilePicture: data.profilePicture.url });
+      }
     } else {
       setFlashMessage(`Erreur: ${data.message || 'Mise à jour échouée'}`);
       setFlashMessageColor('error');
@@ -77,12 +95,12 @@ const Profil = () => {
     formWrap.classList.remove('slideInUp');
     formWrap.classList.add('slideOutDown');
     formWrap.addEventListener('animationend', (e) => {
-      e.stopPropagation(); // Empêche la propagation de l'événement
+      e.stopPropagation(); 
       setShowEditForm(false);
       setFlashMessage('Modifications non enregistrées.');
       setFlashMessageColor('error');
-      setTimeout(() => setFlashMessage(''), 3000); // Effacer le message après 3 secondes
-      formWrap.classList.add('hidden'); // Ajoutez cette ligne pour masquer le formulaire après l'animation
+      setTimeout(() => setFlashMessage(''), 3000); 
+      formWrap.classList.add('hidden'); 
     }, { once: true });
   };
 
@@ -106,7 +124,7 @@ const Profil = () => {
               <div className="flex flex-wrap justify-center">
                 <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                   <div className="relative">
-                    <img alt="..." src="https://demos.creative-tim.com/notus-js/assets/img/team-2-800x800.jpg" className="profil-picture shadow-xl rounded-full h-auto align-middle border-none max-w-150-px" />
+                    <img alt="..." src={userData.profilePicture || "/src/assets/components/Pages/Profil/avatar.jpg"} className="profil-picture shadow-xl rounded-full h-auto align-middle border-none max-w-150-px" />
                     <img width="24" height="24" src="https://img.icons8.com/ios-filled/24/FFFFFF/camera--v3.png" alt="camera--v3" className="camera-icon" />
                   </div>
                 </div>
@@ -120,7 +138,7 @@ const Profil = () => {
                 <div className="w-full lg:w-4/12 px-4 lg:order-1">
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">
                     <div className="lg:mr-20 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{userData.post_likeds}</span><span className="text-sm text-blueGray-400">Post likés</span>
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">{userData.totalLikes || 0}</span><span className="text-sm text-blueGray-400">Total des likes reçus</span>
                     </div>
                   </div>
                 </div>
@@ -156,11 +174,11 @@ const Profil = () => {
             <h1 className="form-title">Modifier le profil</h1>
             <div className="form-group">
               <label htmlFor="username">Prénom Nom</label>
-              <input type="text" id="username" name="username" value={userData.username || ''} onChange={handleChange} required />
+              <input type="text" id="username" name="username" value={userData.username || ''} onChange={handleChange} required autoComplete="name" />
             </div>
             <div className="form-group">
               <label htmlFor="email">Email</label>
-              <input type="email" id="email" name="email" value={userData.email || ''} onChange={handleChange} required />
+              <input type="email" id="email" name="email" value={userData.email || ''} onChange={handleChange} required autoComplete="email" />
             </div>
             <div className="form-group">
               <label htmlFor="description">Description</label>
@@ -168,7 +186,11 @@ const Profil = () => {
             </div>
             <div className="form-group">
               <label htmlFor="password">Nouveau mot de passe</label>
-              <input type="password" id="password" name="password" value={userData.password || ''} onChange={handleChange}/>
+              <input type="password" id="password" name="password" value={userData.password || ''} onChange={handleChange} autoComplete="new-password" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="profilePicture">Photo de profil</label>
+              <input type="file" id="profilePicture" name="profilePicture" onChange={handleFileChange} autoComplete="photo" />
             </div>
             <p className="text-center m-4">
               <button type="submit" className="btn btn-rounded">Enregistrer</button>

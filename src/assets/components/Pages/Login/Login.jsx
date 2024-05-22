@@ -31,6 +31,7 @@ const Login = () => {
       .then((data) => {
         console.log('Registration successful:', data);
         Cookies.set('token', data.jwt);
+        Cookies.set('userData', JSON.stringify(data.user));
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -52,6 +53,7 @@ const Login = () => {
         const data = await response.json();
         console.log('User logged in:', data);
         Cookies.set('token', data.jwt);
+        Cookies.set('userData', JSON.stringify(data.user));
         navigate('/');
         window.location.reload();
       } catch (error) {

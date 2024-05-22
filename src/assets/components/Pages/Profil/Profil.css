@@ -41,6 +41,11 @@
 .profil-picture {
   position: relative;
   top: -65px; 
+  border-radius: 50%;
+  width: 150px !important; /* Ajoutez !important */
+  height: 150px !important; /* Ajoutez !important */
+  object-fit: cover; /* Ajoutez cette ligne */
+  object-position: center; /* Ajoutez cette ligne */
 }
 
 .description-text {
@@ -218,3 +223,10 @@ form#register-form {
   display: none;
 }
 
+#profilePicture {
+  border-radius: 4rem; 
+  background-color: var(--button-color, white);
+  width: auto; 
+  display: inline-block; 
+  cursor: pointer; 
+}

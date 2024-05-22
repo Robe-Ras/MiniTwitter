@@ -20,7 +20,7 @@ const Navbar = () => {
       { name: "Profil", link: "/Profil" },
       !isLoggedIn ? { name: "Se connecter", link: "/Login" } : null,
       isLoggedIn ? { name: "Se déconnecter", link: "#", icon: "https://img.icons8.com/external-wanicon-lineal-wanicon/64/605ceb/external-dove-wedding-wanicon-lineal-wanicon.png" } : null,
-    ].filter(Boolean); // Filtrer les éléments null
+    ].filter(Boolean); 
 
     const openBurgerMenuButton = document.getElementById("burger-menu-button");
 
@@ -82,16 +82,24 @@ const Navbar = () => {
     openBurgerMenuButton.addEventListener("click", openBurgerMenu);
     document.getElementById("close-dropdown-button").addEventListener("click", closeBurgerMenu);
 
-    // Ajoutez l'événement de clic pour le bouton de déconnexion
+   
     if (isLoggedIn) {
       document.getElementById("Se déconnecter").addEventListener("click", handleLogout);
     }
 
     return () => {
-      openBurgerMenuButton.removeEventListener("click", openBurgerMenu);
-      document.getElementById("close-dropdown-button").removeEventListener("click", closeBurgerMenu);
+      if (openBurgerMenuButton) {
+        openBurgerMenuButton.removeEventListener("click", openBurgerMenu);
+      }
+      const closeDropdownButton = document.getElementById("close-dropdown-button");
+      if (closeDropdownButton) {
+        closeDropdownButton.removeEventListener("click", closeBurgerMenu);
+      }
       if (isLoggedIn) {
-        document.getElementById("Se déconnecter").removeEventListener("click", handleLogout);
+        const logoutButton = document.getElementById("Se déconnecter");
+        if (logoutButton) {
+          logoutButton.removeEventListener("click", handleLogout);
+        }
       }
     };
   }, [isLoggedIn, handleLogout]);
@@ -112,7 +120,7 @@ const Navbar = () => {
               <span className="block text-2xl font-extralight">✕</span>
             </button>
           </div>
-          <h2 className="user-name opacity-60 text-xs uppercase mt-10 ml-6">robena rasolondramanitra</h2>
+          <h2 className="user-name opacity-60 text-xs uppercase mt-10 ml-6">pigeon voyageur</h2>
           <div className="h-[1px] w-full bg-gray-500 mt-4"></div>
           <div className="px-6" id="links">
           </div>
